@@ -1,3 +1,6 @@
 # Retrieve Operation
 ```python
-book = Book.objects.get(id=1)
+from bookshelf.models import Book
+book = Book.objects.get(title="1984")
+book
+
