@@ -6,7 +6,7 @@ from .models import Book
 @permission_required('app_name.can_view', raise_exception=True)
 def view_books(request):
     books = Book.objects.all()
-    return render(request, 'books/view_books.html', {'books': books})
+    return render(request, 'bookshelf/view_books.html', {'books': books})
 
 @permission_required('app_name.can_create', raise_exception=True)
 def create_book(request):
