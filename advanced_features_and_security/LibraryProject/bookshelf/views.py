@@ -34,3 +34,13 @@ def delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     book.delete()
     return HttpResponse("Book deleted successfully")
+
+
+def example_view(request):
+    if request.method == 'POST':
+        # Process form data here
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        # Perform operations with the submitted data
+        return render(request, 'success.html')
+    return render(request, 'example_form.html')  # Render the form
