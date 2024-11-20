@@ -4,7 +4,7 @@ from django.http import HttpResponseForbidden, HttpResponse
 from .models import Book
 
 @permission_required('app_name.can_view', raise_exception=True)
-def view_books(request):
+def book_list(request):
     books = Book.objects.all()
     return render(request, 'bookshelf/view_books.html', {'books': books})
 
