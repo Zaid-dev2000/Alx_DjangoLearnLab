@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponseForbidden, HttpResponse
 from .models import Book
+from .forms import ExampleForm
+
 
 @permission_required('app_name.can_view', raise_exception=True)
 def book_list(request):
@@ -36,11 +38,16 @@ def delete_book(request, book_id):
     return HttpResponse("Book deleted successfully")
 
 
-def example_view(request):
+def example_form_view(request):
     if request.method == 'POST':
-        # Process form data here
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        # Perform operations with the submitted data
-        return render(request, 'success.html')
-    return render(request, 'example_form.html')  # Render the form
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Process the valid form data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            # Add your processing logic here
+            return render(request, 'bookshelf/form_success.html', {'name': name})
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/example_form.html', {'form': form})
