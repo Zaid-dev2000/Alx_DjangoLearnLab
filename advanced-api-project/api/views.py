@@ -1,42 +1,54 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Book
 from .serializers import BookSerializer
 
-class BookListView(ListCreateAPIView):
+class BookListView(ListAPIView):
     """
-    Handles listing all books and creating a new book.
+    Handles listing all books.
     Permissions:
         - Unauthenticated users: Read-only access (GET).
-        - Authenticated users: Full access (GET, POST).
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def perform_create(self, serializer):
-        """
-        Customize the creation logic.
-        """
-        serializer.save()  # Add custom logic here if needed
-        # Example: Notify admin about the new book (future enhancement)
-
-
-class BookDetailView(RetrieveUpdateDestroyAPIView):
+class BookDetailView(RetrieveAPIView):
     """
-    Handles retrieving, updating, or deleting a specific book by ID.
+    Handles retrieving a specific book by ID.
     Permissions:
         - Unauthenticated users: Read-only access (GET).
-        - Authenticated users: Full access (GET, PUT, PATCH, DELETE).
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def perform_update(self, serializer):
-        """
-        Customize the update logic.
-        """
-        serializer.save()  # Add custom update logic if needed
-        # Example: Log updates for analytics (future enhancement)
+class BookCreateView(CreateAPIView):
+    """
+    Handles creating a new book.
+    Permissions:
+        - Authenticated users only (POST).
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
+class BookUpdateView(UpdateAPIView):
+    """
+    Handles updating an existing book.
+    Permissions:
+        - Authenticated users only (PUT, PATCH).
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class BookDeleteView(DestroyAPIView):
+    """
+    Handles deleting a book.
+    Permissions:
+        - Authenticated users only (DELETE).
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
