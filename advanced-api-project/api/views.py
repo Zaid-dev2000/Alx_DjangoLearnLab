@@ -4,6 +4,8 @@ from .models import Book
 from .serializers import BookSerializer
 from rest_framework.filters import OrderingFilter, SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework
+from rest_framework import generics
 
 
 class BookListView(ListAPIView):
@@ -67,7 +69,7 @@ class BookListView(ListCreateAPIView):
     search_fields = ['title', 'author__name']  # Fields for searching
     ordering_fields = ['title', 'publication_year']  # Fields for ordering
     ordering = ['title']  # Default ordering
-    
+
     """
 Filtering, searching, and ordering features:
 - Filtering: Use query parameters (e.g., ?title=Harry) to filter results.
