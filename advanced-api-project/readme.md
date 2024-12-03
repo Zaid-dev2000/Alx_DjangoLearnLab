@@ -39,3 +39,16 @@ Clone the project from the GitHub repository:
 ```bash
 git clone <repository-url>
 cd advanced-api-project
+## Advanced Query Features
+
+### Filtering
+- **Filter by title**: `/api/books/?title=Harry`
+- **Filter by author**: `/api/books/?author__name=Rowling`
+- **Filter by publication year**: `/api/books/?publication_year=1997`
+
+### Searching
+- **Search in title and author name**: `/api/books/?search=Harry`
+
+### Ordering
+- **Order by title**: `/api/books/?ordering=title`
+- **Order by publication year (descending)**: `/api/books/?ordering=-publication_year`
