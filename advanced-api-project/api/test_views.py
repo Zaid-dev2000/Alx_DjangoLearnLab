@@ -19,7 +19,7 @@ class BookAPITests(APITestCase):
         )
         self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', password='testpassword')
-        self.client.force_authenticate(user=self.user)  # Authenticate the client
+        self.client.login(user=self.user)  # Authenticate the client
         self.list_url = reverse('book-list')  # URL for the list endpoint
         self.detail_url = reverse('book-detail', kwargs={'pk': self.book.id})  # URL for the detail endpoint
 
@@ -62,7 +62,7 @@ class BookAPITests(APITestCase):
             "publication_year": 1997,
             "author": self.author.id
         }
-        self.client.force_authenticate(user=self.user)  # Authenticate the client
+        self.client.login(user=self.user)  # Authenticate the client
         response = self.client.put(self.detail_url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.book.refresh_from_db()
