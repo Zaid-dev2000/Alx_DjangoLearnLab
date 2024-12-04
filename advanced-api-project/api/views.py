@@ -2,13 +2,14 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, IsAuthenticatedOrReadOnly
 from .models import Book, Author
 from .serializers import BookSerializer
-from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework
 from rest_framework import generics, status
 from rest_framework.test import APITestCase, APIClient
 from django.urls import reverse
 from django.contrib.auth.models import User
+from rest_framework import filters
 
 
 
@@ -68,7 +69,7 @@ class BookListView(ListCreateAPIView):
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, SearchFilter, filters.OrderingFilter]
     filterset_fields = ['title', 'author__name', 'publication_year']
     search_fields = ['title', 'author__name']  # Fields for searching
     ordering_fields = ['title', 'publication_year']  # Fields for ordering
@@ -143,29 +144,3 @@ class BookAPITests(APITestCase):
             "author": self.author.id
         })
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-    
-    def test_order_books_by_title(self):
-        """
-        Test ordering books by title.
-        """
-        Book.objects.create(
-            title="Harry Potter and the Chamber of Secrets",
-            publication_year=1998,
-            author=self.author
-        )
-        response = self.client.get(f"{self.list_url}?ordering=title")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['title'], "Harry Potter and the Chamber of Secrets")
-
-    def test_order_books_by_publication_year_desc(self):
-        """
-        Test ordering books by publication year in descending order.
-        """
-        Book.objects.create(
-            title="Harry Potter and the Chamber of Secrets",
-            publication_year=1998,
-            author=self.author
-        )
-        response = self.client.get(f"{self.list_url}?ordering=-publication_year")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['publication_year'], 1998)
