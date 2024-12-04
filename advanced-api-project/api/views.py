@@ -143,3 +143,29 @@ class BookAPITests(APITestCase):
             "author": self.author.id
         })
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    
+    def test_order_books_by_title(self):
+        """
+        Test ordering books by title.
+        """
+        Book.objects.create(
+            title="Harry Potter and the Chamber of Secrets",
+            publication_year=1998,
+            author=self.author
+        )
+        response = self.client.get(f"{self.list_url}?ordering=title")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['title'], "Harry Potter and the Chamber of Secrets")
+
+    def test_order_books_by_publication_year_desc(self):
+        """
+        Test ordering books by publication year in descending order.
+        """
+        Book.objects.create(
+            title="Harry Potter and the Chamber of Secrets",
+            publication_year=1998,
+            author=self.author
+        )
+        response = self.client.get(f"{self.list_url}?ordering=-publication_year")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['publication_year'], 1998)
