@@ -52,3 +52,10 @@ cd advanced-api-project
 ### Ordering
 - **Order by title**: `/api/books/?ordering=title`
 - **Order by publication year (descending)**: `/api/books/?ordering=-publication_year`
+
+## API Testing
+
+### Running Tests
+To run the test suite, execute:
+```bash
+python manage.py test api
