@@ -37,6 +37,8 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
 }
 
+LOGIN_URL = '/login/'  # Replace with the path to your login page
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
