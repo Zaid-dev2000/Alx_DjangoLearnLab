@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
-from django.contrib.auth import login
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import CustomUserCreationForm, PostForm
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -29,47 +29,48 @@ def profile(request):
 
 
 # List all posts
-class PostListView(ListView):
-    model = Post
-    template_name = 'blog/post_list.html'
-    context_object_name = 'posts'
-    ordering = ['-published_date']
+def post_list(request):
+    posts = Post.objects.all().order_by('-published_date')
+    return render(request, 'blog/post_list.html', {'posts': posts})
 
 # View a single post
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, 'blog/post_detail.html', {'post': post})
 
-# Create a new post
-class PostCreateView(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['title', 'content']
-    template_name = 'blog/post_form.html'
+# Create a new post (login required)
+@login_required
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('post-detail', pk=post.pk)
+    else:
+        form = PostForm()
+    return render(request, 'blog/post_form.html', {'form': form})
 
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
+# Update a post (login required and author verification)
+@login_required
+def post_update(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if post.author != request.user:
+        return redirect('post-list')  # Redirect if not the author
+    if request.method == 'POST':
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post-detail', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'blog/post_form.html', {'form': form})
 
-# Update a post
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Post
-    fields = ['title', 'content']
-    template_name = 'blog/post_form.html'
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
-        return super().form_valid(form)
-
-    def test_func(self):
-        post = self.get_object()
-        return self.request.user == post.author
-
-# Delete a post
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = Post
-    success_url = reverse_lazy('post-list')
-    template_name = 'blog/post_confirm_delete.html'
-
-    def test_func(self):
-        post = self.get_object()
-        return self.request.user == post.author
+# Delete a post (login required and author verification)
+@login_required
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if post.author == request.user:
+        post.delete()
+    return redirect('post-list')
