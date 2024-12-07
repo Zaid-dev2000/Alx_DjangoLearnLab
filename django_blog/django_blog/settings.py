@@ -78,9 +78,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'MyBlog_DB',  # Replace with your database name
-        'USER': 'ZaidDB',  # Replace with your database user
-        'PASSWORD': 'Z@id123',  # Replace with your database password
-        'HOST': '8080',  # Replace with your database host
+        'USER': 'postgres',  # Replace with your database user
+        'PASSWORD': 'zaid123',  # Replace with your database password
+        'HOST': 'localhost',  # Typically 'localhost' or an IP address
         'PORT': '5432',  # Default PostgreSQL port
     }
 }
