@@ -10,13 +10,16 @@ def register(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been created successfully!')
-            return redirect('login')
+            return redirect('blog/login')
         else:
             messages.error(request, 'There was an error with your registration.')
     else:
         form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+    return render(request, 'blog/register.html', {'form': form})
 
 
 def base(request):
     return render(request, 'blog/base.html')
+
+def profile(request):
+    return render(request, 'blog/profile.html')
