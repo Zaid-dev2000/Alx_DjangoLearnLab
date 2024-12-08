@@ -31,7 +31,7 @@ class CommentForm(forms.ModelForm):
 from django import forms
 from taggit.forms import TagWidget
 
-class TagForm(forms.Form):
+class TagForm(TagWidget):
     tags = forms.CharField(
         widget=TagWidget(attrs={
             'class': 'form-control',
