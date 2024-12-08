@@ -7,16 +7,28 @@
 </head>
 <body>
     <h1>{{ post.title }}</h1>
+
     <p>{{ post.content }}</p>
+    
     <p>By {{ post.author }} on {{ post.published_date }}</p>
+    
     {% if request.user == post.author %}
         <a href="{% url 'post-update' post.pk %}">Edit</a>
         <a href="{% url 'post-delete' post.pk %}">Delete</a>
     {% endif %}
+
+    <p>Tags:
+        {% for tag in post.tags.all %}
+            <a href="{% url 'tagged-posts' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </p>
+
     <a href="{% url 'post-list' %}">Back to All Posts</a>
     <h2>Comments</h2>
         <div>
+
             {% for comment in post.comments.all %}
+            
             <div class="comment">
                 <p><strong>{{ comment.author }}</strong> on {{ comment.created_at }}</p>
                 <p>{{ comment.content }}</p>
@@ -25,6 +37,7 @@
                 <a href="{% url 'delete-comment' comment.id %}">Delete</a>
                 {% endif %}
             </div>
+            
             {% endfor %}
         </div>
         {% if user.is_authenticated %}
