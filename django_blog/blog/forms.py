@@ -27,3 +27,16 @@ class CommentForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Add a comment...'}),
         }
 
+
+from django import forms
+from taggit.forms import TagWidget
+
+class TagForm(forms.Form):
+    tags = forms.CharField(
+        widget=TagWidget(attrs={
+            'class': 'form-control',
+            'placeholder': 'Add tags separated by commas',
+        }),
+        label="Tags",
+        required=False
+    )
