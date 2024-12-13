@@ -1,16 +1,21 @@
 # accounts/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
+# UserSerializer for Registration
 class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=150)
+    email = serializers.EmailField(max_length=255)
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
     class Meta:
-        model = get_user_model()  # This will dynamically use your custom user model
+        model = get_user_model()
         fields = ['username', 'email', 'password', 'bio', 'profile_picture']
-        extra_kwargs = {'password': {'write_only': True}}  # Ensure the password is write-only
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        # Use create_user to handle password hashing and user creation
+        # Create a user securely using create_user method
         user = get_user_model().objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -18,6 +23,16 @@ class UserSerializer(serializers.ModelSerializer):
             bio=validated_data.get('bio', ''),
             profile_picture=validated_data.get('profile_picture', None)
         )
-        # Optionally create a token for the new user
-        Token.objects.create(user=user)
         return user
+
+# LoginSerializer for Login
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(style={'input_type': 'password'})
+
+    def validate(self, data):
+        # Authenticate the user based on the provided username and password
+        user = authenticate(username=data['username'], password=data['password'])
+        if user is None:
+            raise serializers.ValidationError("Invalid username or password.")
+        return data
