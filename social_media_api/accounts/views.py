@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from .models import CustomUser
 
-class RegisterView(views.APIView):
+class RegisterView(permissions.IsAuthenticated):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -16,7 +16,7 @@ class RegisterView(views.APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LoginView(views.APIView):
+class LoginView(CustomUser.objects.all()):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
