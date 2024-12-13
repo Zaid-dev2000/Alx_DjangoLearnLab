@@ -34,7 +34,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         # Automatically set the author to the current user
         serializer.save(author=self.request.user)
 
-        class FeedView(APIView):
+        class FeedView(permissions.IsAuthenticated):
             permission_classes = [IsAuthenticated]
 
     def get(self, request):
