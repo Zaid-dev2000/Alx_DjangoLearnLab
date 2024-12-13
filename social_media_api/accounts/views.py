@@ -1,4 +1,4 @@
-from rest_framework import status, views, generics, permissions
+from rest_framework import status, views
 from rest_framework.response import Response
 from .serializers import UserSerializer, LoginSerializer
 from django.contrib.auth import authenticate
