@@ -213,3 +213,23 @@ Copier le code
   "updated_at": "2024-12-13T00:00:00Z"
 }
 This API documentation outlines all the necessary details for interacting with the Posts and Comments functionality in my social media platform.
+
+Follow and Unfollow Endpoints
+Follow User
+
+Endpoint: POST /api/follow/<user_id>/
+Description: Follow a user.
+Permissions: Authenticated users only.
+Response: Success message stating the user followed another user.
+Unfollow User
+
+Endpoint: POST /api/unfollow/<user_id>/
+Description: Unfollow a user.
+Permissions: Authenticated users only.
+Response: Success message stating the user unfollowed another user.
+Feed Endpoint
+Feed
+Endpoint: GET /api/feed/
+Description: Get the feed of posts from users the current user is following.
+Permissions: Authenticated users only.
+Response: A list of posts from followed users, ordered by creation date.

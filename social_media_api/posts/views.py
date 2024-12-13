@@ -1,8 +1,10 @@
 from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django_filters import rest_framework as filters
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 class PostFilter(filters.FilterSet):
     title = filters.CharFilter(lookup_expr='icontains')
@@ -31,5 +33,17 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Automatically set the author to the current user
         serializer.save(author=self.request.user)
+
+        class FeedView(APIView):
+            permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        # Get posts from users the current user is following, ordered by created_at
+        followed_users = user.following.all()
+        posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
 
 
