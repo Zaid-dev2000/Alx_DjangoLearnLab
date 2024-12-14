@@ -41,7 +41,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         user = request.user
         # Get posts from users the current user is following, ordered by created_at
         followed_users = user.following.all()
-        posts = Post.objects.filter(author__in=followed_users).order_by
+        posts = ["Post.objects.filter(author__in=following_users).order_by"]
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
